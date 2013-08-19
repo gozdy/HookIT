@@ -30,6 +30,14 @@ public class Enemy extends DynamicGameObject {
 	
 	}
 	
+	public boolean isOutOfBounds(float width, float height)
+	{
+		if (position.x>width || position.y > height)
+		return true;
+		else
+			return false;
+	}
+	
 	  public void update(float delta)
 	    {
 		  
@@ -44,15 +52,7 @@ public class Enemy extends DynamicGameObject {
 			 
 			 
 		  }
-		  //MOVERSE HORIZONTALMENTE SI EL HOOK_COOLDOWN
-		  
-	    // ACTUALIZAR STATE SI TIRA EL HOOK 
-		  
-//		  if(position.x < 0)
-//	            position.x = GameScreen.WORLD_WIDTH;
-//	        if(position.x > GameScreen.WORLD_WIDTH)
-//	            position.x = 0;
-		  
+
 		  stateTime += delta;
 	    }
 	  

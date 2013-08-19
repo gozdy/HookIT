@@ -34,30 +34,23 @@ public class Hero extends DynamicGameObject {
 			  hook.position.set(position);
 		  }
 		  
-//		  if(position.x < 0)
-//	            position.x = GameScreen.WORLD_WIDTH;
-//		  
-//	        if(position.x > GameScreen.WORLD_WIDTH)
-//	            position.x = 0;
-		  
 		  stateTime += delta;
 		  hook.update(delta);
 	    }
 	  
-	  public void throwHook(float angle, float hookSpeed)
+	  public void throwHook()
 	  {
 		  state = HOOK_LAUNCHED;
 		  stateTime = 0;
 		  velocity.set(0, 0);
 		  
-		 hook.velocity.x = MathUtils.cosDeg(angle) * hookSpeed;
-		 hook.velocity.y = MathUtils.sinDeg(angle) * hookSpeed;
 	  }
 	  
 	  public void getHook()
 	  {
 		  state = HOOK_COOLDOWN;
 		  stateTime = 0;
+		  hook.velocity.set(0,0);
 		  
 	  }
 	  

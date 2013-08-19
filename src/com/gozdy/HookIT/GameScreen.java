@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -28,7 +29,7 @@ public class GameScreen implements Screen {
 	float hookAngle = 0;
 	Vector2 gravity = new Vector2(0,-10);
 	long lastEnemyTime;
-	float hookTime;
+	float hookTime = 4f;
 	
 	
 	
@@ -85,7 +86,7 @@ public class GameScreen implements Screen {
 		  if (Gdx.input.isTouched()) {
 			  if (hero.state == Hero.HOOK_COOLDOWN)
 			  {
-			  	
+			  	hero.throwHook();
 	// Check touch position and angle
 			  hero.hook.position.set(hero.position);
               Vector3 touchPos = new Vector3();
@@ -94,9 +95,11 @@ public class GameScreen implements Screen {
               Vector2 touchPos2 = new Vector2(touchPos.x, touchPos.y);
               hookAngle = touchPos2.sub(hero.hook.position).angle();
               float ballspeed = 15f;
+              			hero.hook.velocity.x = MathUtils.cosDeg(hookAngle) * ballspeed;
+              				hero.hook.velocity.y = MathUtils.sinDeg(hookAngle) * ballspeed;
+
 				
-				
-				hero.throwHook(hookAngle, ballspeed);	
+				//hero.throwHook(hookAngle, ballspeed, hero.hook);	
 			  }
           
       }
@@ -109,17 +112,31 @@ public class GameScreen implements Screen {
 			  spawnenemy();
 			  }
 		  
-// RETURN HOOK AFTER 1.5 Seconds (Need to rework to go back to the hero instead of fixed time)		  
+		//Manage return when enemy is hooked
+		  for (Enemy enemy : enemies) {
+			  if (hero.hook.bounds.overlaps(enemy.bounds) && enemy.state == Enemy.ALIVE && hero.state == Hero.HOOK_LAUNCHED)
+		  {			
+				  hookTime = hero.stateTime*2;
+				  Gdx.app.log("hookTime", Float.toString(hookTime));
+				  hero.hook.velocity.x = -hero.hook.velocity.x;
+			 hero.hook.velocity.y = -hero.hook.velocity.y;
+			 Gdx.app.log("hookangle", "OVERLAP");
+			 enemy.state = Enemy.HOOKED;
+		  		}
+		  }
 		  
-		  if (hero.state == Hero.HOOK_LAUNCHED && (hero.stateTime > hookTime || (hero.hook.position.x > WORLD_WIDTH || hero.hook.position.y > WORLD_HEIGHT))){
+// RETURN HOOK AFTER time*2 since collition	  
+		  
+		  if (hero.state == Hero.HOOK_LAUNCHED && (hero.stateTime > hookTime || hero.hook.position.y < 0 )){
 			  hero.getHook();
 			  Iterator<Enemy> iter = enemies.iterator();
 		      while(iter.hasNext()) {
 		         Enemy enemy = iter.next();
 		         
-		         if(enemy.state == Enemy.HOOKED)
+		         if(enemy.state == Enemy.HOOKED )
 		        	 {iter.remove();
 		         Gdx.app.log("REMO", "REMOVED");
+		         hookTime= 4f;
 		        	 }
 		      }
 		  }
@@ -132,40 +149,25 @@ public class GameScreen implements Screen {
 					}
 		  	}	
 		  
-		  //Manage return when enemy is hooked
-		  for (Enemy enemy : enemies) {
-			  if (hero.hook.bounds.overlaps(enemy.bounds) && enemy.state == Enemy.ALIVE && hero.state == Hero.HOOK_LAUNCHED)
-		  {			
-				  hookTime = hero.stateTime*2;
-				  hero.hook.velocity.x = -hero.hook.velocity.x;
-			 hero.hook.velocity.y = -hero.hook.velocity.y;
-			 Gdx.app.log("hookangle", "OVERLAP");
-			 enemy.state = Enemy.HOOKED;
-		  		}
-		  }
+		  
 		  
 		  // MANAGE RETURN WHEN NOT HOOKED
-		  if (hero.hook.position.x == WORLD_WIDTH || hero.hook.position.x == 0 || hero.hook.position.y == WORLD_HEIGHT){
+		  if (hero.hook.position.x > WORLD_WIDTH || hero.hook.position.x < 0 || hero.hook.position.y > WORLD_HEIGHT){
+			  hookTime = hero.stateTime*2;
 			  hero.hook.velocity.x = -hero.hook.velocity.x;
 				 hero.hook.velocity.y = -hero.hook.velocity.y;
-				 hookTime = hero.stateTime*2;
+				 
 				 
 		  }
 		  
 		  
-		  if ( hero.stateTime*2 == hookTime && hero.state == Hero.HOOK_LAUNCHED){
-			  hero.hook.velocity.set(0, 0);
-		  }
-		  
-		 
-		  
-		  //Remove enemies that fall under y < 0
+		  //Remove enemies that fall under y < 0 or X>width
 		  
 		  Iterator<Enemy> iter = enemies.iterator();
 	      while(iter.hasNext()) {
 	         Enemy enemy = iter.next();
 	         
-	         if(enemy.position.y + 64 < 0) 
+	         if(enemy.position.y + 64 < 0 || enemy.isOutOfBounds(WORLD_WIDTH, WORLD_HEIGHT)) 
 	        	 {iter.remove();
 	         Gdx.app.log("REMO", "REMOVED");
 	        	 }
