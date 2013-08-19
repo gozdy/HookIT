@@ -30,6 +30,7 @@ public class MainMenuScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 		
 		game.batch.begin();
+//		game.font.scale(5);
 		game.font.draw(game.batch, "HOOKGAMEEEE", WORLD_WIDTH/2, WORLD_HEIGHT/2);
 		
 		game.batch.end();

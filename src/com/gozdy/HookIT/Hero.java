@@ -1,5 +1,7 @@
 package com.gozdy.HookIT;
 
+import com.badlogic.gdx.math.MathUtils;
+
 
 
 public class Hero extends DynamicGameObject {
@@ -31,25 +33,25 @@ public class Hero extends DynamicGameObject {
 		  {
 			  hook.position.set(position);
 		  }
-		  //MOVERSE HORIZONTALMENTE SI EL HOOK_COOLDOWN
 		  
-	    // ACTUALIZAR STATE SI TIRA EL HOOK 
-		  
-		  if(position.x < 0)
-	            position.x = GameScreen.WORLD_WIDTH;
-		  
-	        if(position.x > GameScreen.WORLD_WIDTH)
-	            position.x = 0;
+//		  if(position.x < 0)
+//	            position.x = GameScreen.WORLD_WIDTH;
+//		  
+//	        if(position.x > GameScreen.WORLD_WIDTH)
+//	            position.x = 0;
 		  
 		  stateTime += delta;
 		  hook.update(delta);
 	    }
 	  
-	  public void throwHook()
+	  public void throwHook(float angle, float hookSpeed)
 	  {
 		  state = HOOK_LAUNCHED;
 		  stateTime = 0;
 		  velocity.set(0, 0);
+		  
+		 hook.velocity.x = MathUtils.cosDeg(angle) * hookSpeed;
+		 hook.velocity.y = MathUtils.sinDeg(angle) * hookSpeed;
 	  }
 	  
 	  public void getHook()
