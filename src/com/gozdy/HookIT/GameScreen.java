@@ -7,6 +7,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -23,6 +25,8 @@ public class GameScreen implements Screen {
 	Texture hookimage;
 	Texture enemyimage;
 	Texture heroimage;
+	Texture background;
+	TextureRegion backgroundRegion;
 	OrthographicCamera camera;
 	Array<Enemy> enemies;
 	Hero hero;
@@ -30,6 +34,7 @@ public class GameScreen implements Screen {
 	Vector2 gravity = new Vector2(0,-10);
 	long lastEnemyTime;
 	float hookTime = 4f;
+	Sprite hookSprite;
 	
 	
 	
@@ -39,9 +44,12 @@ public class GameScreen implements Screen {
 		
 		hgame = game;
 		// load the image and set camera
-		hookimage = new Texture(Gdx.files.internal("bobrgb888-32x32.png"));
+		background = new Texture(Gdx.files.internal("backgroundHookIT.png"));
+        backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
+		hookimage = new Texture(Gdx.files.internal("HOOKRotado.png"));
 		enemyimage = new Texture(Gdx.files.internal("bobargb8888.png"));
 		heroimage = new Texture(Gdx.files.internal("avatar_pudge.png"));
+		hookSprite = new Sprite(hookimage);
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -50,6 +58,11 @@ public class GameScreen implements Screen {
 		hero = new Hero(WORLD_WIDTH*0.5f, WORLD_HEIGHT*0.1f, 1f, 1f);
 		enemies = new Array<Enemy>();
 		spawnenemy();
+		
+		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
+		hookSprite.setOrigin(0.2f,0.2f);
+		hookSprite.setSize(0.4f, 0.4f);
+		
 	}
 
 	
@@ -73,11 +86,16 @@ public class GameScreen implements Screen {
 		hgame.batch.setProjectionMatrix(camera.combined);
 		
 		hgame.batch.begin();
+		hgame.batch.draw(backgroundRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 		 for (Enemy enemy : enemies) {
 			hgame.batch.draw(enemyimage, enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
 		 }
 		hgame.batch.draw(heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
-		hgame.batch.draw(hookimage, hero.hook.position.x, hero.hook.position.y, hero.hook.bounds.width, hero.hook.bounds.height);
+		
+		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
+	
+		hookSprite.draw(hgame.batch);
+//		hgame.batch.draw(hookimage, hero.hook.position.x, hero.hook.position.y, hero.hook.bounds.width, hero.hook.bounds.height);
 		hgame.batch.end();
 		
 		
@@ -88,7 +106,7 @@ public class GameScreen implements Screen {
 			  {
 			  	hero.throwHook();
 	// Check touch position and angle
-			  hero.hook.position.set(hero.position);
+			//  hero.hook.position.set(hero.position);
               Vector3 touchPos = new Vector3();
               touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
               camera.unproject(touchPos);
@@ -97,7 +115,8 @@ public class GameScreen implements Screen {
               float ballspeed = 15f;
               			hero.hook.velocity.x = MathUtils.cosDeg(hookAngle) * ballspeed;
               				hero.hook.velocity.y = MathUtils.sinDeg(hookAngle) * ballspeed;
-
+              				
+              				hookSprite.setRotation(hookAngle-90);
 				
 				//hero.throwHook(hookAngle, ballspeed, hero.hook);	
 			  }
@@ -141,6 +160,17 @@ public class GameScreen implements Screen {
 		      }
 		  }
 		  
+		  // MANAGE RETURN WHEN NOT HOOKED
+		  if (hero.hook.position.x+0.1f > WORLD_WIDTH || hero.hook.position.x-0.1f < 0 || hero.hook.position.y+0.1f > WORLD_HEIGHT){
+			  hookTime = hero.stateTime*2;
+			  hero.hook.velocity.x = -hero.hook.velocity.x;
+				 hero.hook.velocity.y = -hero.hook.velocity.y;
+				 
+				  Gdx.app.log("hookTime", Float.toString(hookTime));
+
+		  }
+		  
+		  
 		  
 		  // Handle hooked enemies
 		  for (Enemy enemy : enemies) {
@@ -151,15 +181,7 @@ public class GameScreen implements Screen {
 		  
 		  
 		  
-		  // MANAGE RETURN WHEN NOT HOOKED
-		  if (hero.hook.position.x > WORLD_WIDTH || hero.hook.position.x < 0 || hero.hook.position.y > WORLD_HEIGHT){
-			  hookTime = hero.stateTime*2;
-			  hero.hook.velocity.x = -hero.hook.velocity.x;
-				 hero.hook.velocity.y = -hero.hook.velocity.y;
-				 
-				 
-		  }
-		  
+		
 		  
 		  //Remove enemies that fall under y < 0 or X>width
 		  
@@ -217,7 +239,10 @@ public class GameScreen implements Screen {
 		// TODO Auto-generated method stub
 enemyimage.dispose();
 heroimage.dispose();
+background.dispose();
+hookimage.dispose();
 hgame.batch.dispose();
+
 	}
 
 }
