@@ -24,8 +24,9 @@ public class GameScreen implements Screen {
 	HookGame hgame;
 	Texture hookimage;
 	Texture enemyimage;
-	Texture heroimage;
+	TextureRegion heroimage;
 	Texture background;
+	Texture heroimg;
 	TextureRegion backgroundRegion;
 	OrthographicCamera camera;
 	Array<Enemy> enemies;
@@ -48,14 +49,15 @@ public class GameScreen implements Screen {
         backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
 		hookimage = new Texture(Gdx.files.internal("HOOKRotado.png"));
 		enemyimage = new Texture(Gdx.files.internal("bobargb8888.png"));
-		heroimage = new Texture(Gdx.files.internal("avatar_pudge.png"));
+		heroimg = new Texture(Gdx.files.internal("chef.png"));
+		heroimage = new TextureRegion(heroimg, 75, 0, 95, 256);
 		hookSprite = new Sprite(hookimage);
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
 		
 		// SPAWN Hero and Enemies
-		hero = new Hero(WORLD_WIDTH*0.5f, WORLD_HEIGHT*0.1f, 1f, 1f);
+		hero = new Hero(WORLD_WIDTH*0.5f-1f, WORLD_HEIGHT*0.05f, 4f, 4f);
 		enemies = new Array<Enemy>();
 		spawnenemy();
 		
@@ -148,6 +150,7 @@ public class GameScreen implements Screen {
 		  
 		  if (hero.state == Hero.HOOK_LAUNCHED && (hero.stateTime > hookTime || hero.hook.position.y < 0 )){
 			  hero.getHook();
+			  hookSprite.setRotation(0);
 			  Iterator<Enemy> iter = enemies.iterator();
 		      while(iter.hasNext()) {
 		         Enemy enemy = iter.next();
@@ -167,6 +170,7 @@ public class GameScreen implements Screen {
 				 hero.hook.velocity.y = -hero.hook.velocity.y;
 				 
 				  Gdx.app.log("hookTime", Float.toString(hookTime));
+				  hookSprite.rotate(180);
 
 		  }
 		  
@@ -238,7 +242,7 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 enemyimage.dispose();
-heroimage.dispose();
+heroimg.dispose();
 background.dispose();
 hookimage.dispose();
 hgame.batch.dispose();
