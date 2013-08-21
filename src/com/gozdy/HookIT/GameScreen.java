@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -22,20 +23,30 @@ public class GameScreen implements Screen {
 	    public static final float WORLD_HEIGHT = 16;
 	
 	HookGame hgame;
-	Texture hookimage;
-	Texture enemyimage;
+	
+	TextureRegion backgroundRegion;
 	TextureRegion heroimage;
+	TextureRegion ropeRegion;
+	
 	Texture background;
 	Texture heroimg;
-	TextureRegion backgroundRegion;
+	Texture ropeImg;
+	Texture hookimage;
+	Texture enemyimage;
+	
+	Sprite ropeSprite;
+	Sprite hookSprite;
+	
 	OrthographicCamera camera;
+	
 	Array<Enemy> enemies;
 	Hero hero;
 	float hookAngle = 0;
 	Vector2 gravity = new Vector2(0,-10);
 	long lastEnemyTime;
 	float hookTime = 4f;
-	Sprite hookSprite;
+	float distancehero = 0f;
+	
 	
 	
 	
@@ -52,6 +63,12 @@ public class GameScreen implements Screen {
 		heroimg = new Texture(Gdx.files.internal("chef.png"));
 		heroimage = new TextureRegion(heroimg, 75, 0, 95, 256);
 		hookSprite = new Sprite(hookimage);
+		
+		
+		ropeImg = new Texture(Gdx.files.internal("ropeVertical64.png"));
+		ropeImg.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		ropeRegion = new TextureRegion(ropeImg, 0, 0, 5, 5);
+		ropeSprite = new Sprite(ropeRegion);
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -62,8 +79,13 @@ public class GameScreen implements Screen {
 		spawnenemy();
 		
 		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
-		hookSprite.setOrigin(0.2f,0.2f);
+		hookSprite.setOrigin(0.2f,0.0f);
 		hookSprite.setSize(0.4f, 0.4f);
+		
+		ropeSprite.setPosition(hero.hook.position.x+0.15f, hero.hook.position.y);
+		ropeSprite.setOrigin(0, 0);
+	
+		
 		
 	}
 
@@ -95,8 +117,9 @@ public class GameScreen implements Screen {
 		hgame.batch.draw(heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
 		
 		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
-	
+		ropeSprite.draw(hgame.batch);
 		hookSprite.draw(hgame.batch);
+		
 //		hgame.batch.draw(hookimage, hero.hook.position.x, hero.hook.position.y, hero.hook.bounds.width, hero.hook.bounds.height);
 		hgame.batch.end();
 		
@@ -119,12 +142,19 @@ public class GameScreen implements Screen {
               				hero.hook.velocity.y = MathUtils.sinDeg(hookAngle) * ballspeed;
               				
               				hookSprite.setRotation(hookAngle-90);
+              				ropeSprite.setRotation(hookAngle-90);
 				
 				//hero.throwHook(hookAngle, ballspeed, hero.hook);	
 			  }
           
       }
 		  
+		  // Change rope size depending where the hook is
+		  
+		  distancehero = hero.hook.position.dst(hero.position.x, hero.position.y+hero.bounds.height/3)+0.1f;
+		  ropeSprite.setSize(0.1f, distancehero);
+		  ropeSprite.setV(0);
+		  ropeSprite.setV2(distancehero);
 		  
 		  //SPAWN ENEMY AFTER 1 Second
 		  
@@ -170,7 +200,7 @@ public class GameScreen implements Screen {
 				 hero.hook.velocity.y = -hero.hook.velocity.y;
 				 
 				  Gdx.app.log("hookTime", Float.toString(hookTime));
-				  hookSprite.rotate(180);
+				  
 
 		  }
 		  

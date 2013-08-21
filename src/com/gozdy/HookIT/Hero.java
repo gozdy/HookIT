@@ -20,7 +20,7 @@ public class Hero extends DynamicGameObject {
 		state = HOOK_COOLDOWN;
 		stateTime=0;
 		velocity.set(0, 0);
-		hook = new Hook(x, y, 0.4f, 0.4f);	
+		hook = new Hook(x, y+bounds.height/3, 0.4f, 0.4f);	
 
 	
 	}
