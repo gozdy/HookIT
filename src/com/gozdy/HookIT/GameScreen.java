@@ -27,12 +27,14 @@ public class GameScreen implements Screen {
 	TextureRegion backgroundRegion;
 	TextureRegion heroimage;
 	TextureRegion ropeRegion;
+
 	
 	Texture background;
 	Texture heroimg;
 	Texture ropeImg;
 	Texture hookimage;
 	Texture enemyimage;
+	Texture candy;
 	
 	Sprite ropeSprite;
 	Sprite hookSprite;
@@ -40,6 +42,8 @@ public class GameScreen implements Screen {
 	OrthographicCamera camera;
 	
 	Array<Enemy> enemies;
+	Array<TextureRegion> candies;
+	
 	Hero hero;
 	float hookAngle = 0;
 	Vector2 gravity = new Vector2(0,-10);
@@ -59,10 +63,18 @@ public class GameScreen implements Screen {
 		background = new Texture(Gdx.files.internal("backgroundHookIT.png"));
         backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
 		hookimage = new Texture(Gdx.files.internal("HOOKRotado.png"));
-		enemyimage = new Texture(Gdx.files.internal("bobargb8888.png"));
 		heroimg = new Texture(Gdx.files.internal("chef.png"));
 		heroimage = new TextureRegion(heroimg, 75, 0, 95, 256);
 		hookSprite = new Sprite(hookimage);
+		
+		candy = new Texture(Gdx.files.internal("candies.png"));
+
+		
+		candies = new Array<TextureRegion>();
+		candies.add(new TextureRegion(candy, 0, 0, 64, 64));
+		candies.add(new TextureRegion(candy, 0, 64, 64, 64));
+		candies.add(new TextureRegion(candy, 64, 0, 64, 64));
+		candies.add(new TextureRegion(candy, 64, 64, 64, 64));
 		
 		
 		ropeImg = new Texture(Gdx.files.internal("ropeVertical64.png"));
@@ -74,7 +86,7 @@ public class GameScreen implements Screen {
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
 		
 		// SPAWN Hero and Enemies
-		hero = new Hero(WORLD_WIDTH*0.5f-1f, WORLD_HEIGHT*0.05f, 4f, 4f);
+		hero = new Hero(WORLD_WIDTH*0.5f-1f, 0f, 2f, 5.4f);
 		enemies = new Array<Enemy>();
 		spawnenemy();
 		
@@ -99,19 +111,20 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-
 		
-	
-		
+		//SPAWN ENEMY AFTER 1 Second
+		  
+		  if(TimeUtils.nanoTime() - lastEnemyTime > 1000000000) 	 
+	  		{
+			  spawnenemy();
+			  }
 		
 		// HANDLING INPUT
 		
 		  if (Gdx.input.isTouched()) {
-			  if (hero.state == Hero.HOOK_COOLDOWN)
-			  {
+			  if (hero.state == Hero.HOOK_COOLDOWN){
 			  	hero.throwHook();
 	// Check touch position and angle
-			//  hero.hook.position.set(hero.position);
               Vector3 touchPos = new Vector3();
               touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
               camera.unproject(touchPos);
@@ -123,10 +136,7 @@ public class GameScreen implements Screen {
               				
               				hookSprite.setRotation(hookAngle-90);
               				ropeSprite.setRotation(hookAngle-90);
-				
-				//hero.throwHook(hookAngle, ballspeed, hero.hook);	
 			  }
-          
       }
 		  
 		  // Change rope size depending where the hook is
@@ -136,25 +146,16 @@ public class GameScreen implements Screen {
 		  ropeSprite.setV(0);
 		  ropeSprite.setV2(distancehero);
 		  
-		  //SPAWN ENEMY AFTER 1 Second
 		  
-		  if(TimeUtils.nanoTime() - lastEnemyTime > 1000000000) 	 
-	  		{
-			  spawnenemy();
-			  }
 		  
 		//Manage return when enemy is hooked
 		  for (Enemy enemy : enemies) {
-			  if (hero.hook.bounds.overlaps(enemy.bounds) && enemy.state == Enemy.ALIVE && hero.state == Hero.HOOK_LAUNCHED )
-		  {			
-				  
-				  Gdx.app.log("hookTime", Float.toString(hookTime));
+			  if (hero.hook.bounds.overlaps(enemy.bounds) && enemy.state == Enemy.ALIVE && hero.state == Hero.HOOK_LAUNCHED ) {			
 				  if (hero.enemyState == Hero.NOENEMY){
 					  hookTime = hero.stateTime*2;
 				  hero.hook.velocity.x = -hero.hook.velocity.x;
 			 hero.hook.velocity.y = -hero.hook.velocity.y;
-		  }
-			 Gdx.app.log("hookangle", "OVERLAP");
+				  		}	
 			 enemy.state = Enemy.HOOKED;
 			 hero.enemyState = Hero.GOTENEMY;
 		  		}
@@ -168,9 +169,8 @@ public class GameScreen implements Screen {
 			  Iterator<Enemy> iter = enemies.iterator();
 		      while(iter.hasNext()) {
 		         Enemy enemy = iter.next();
-		         
-		         if(enemy.state == Enemy.HOOKED )
-		        	 {iter.remove();
+		         if(enemy.state == Enemy.HOOKED ){
+		        	 iter.remove();
 		         Gdx.app.log("REMO", "REMOVED");
 		         hookTime= 4f;
 		        	 }
@@ -183,10 +183,7 @@ public class GameScreen implements Screen {
 			  hero.hook.velocity.x = -hero.hook.velocity.x;
 				 hero.hook.velocity.y = -hero.hook.velocity.y;
 				 hero.enemyState = Hero.GOTENEMY;
-				 
-				  Gdx.app.log("hookTime", Float.toString(hookTime));
-				  
-
+				  Gdx.app.log("hookTime", Float.toString(hookTime));	
 		  }
 		  
 		  // Handle hooked enemies
@@ -227,14 +224,13 @@ public class GameScreen implements Screen {
 		hgame.batch.begin();
 		hgame.batch.draw(backgroundRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 		 for (Enemy enemy : enemies) {
-			hgame.batch.draw(enemyimage, enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
+			hgame.batch.draw(candies.get(enemy.candyType), enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
 		 }
-		hgame.batch.draw(heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
-		
+		 
 		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
 		ropeSprite.draw(hgame.batch);
 		hookSprite.draw(hgame.batch);
-		
+		hgame.batch.draw(heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
 		hgame.batch.end();
 		
 		

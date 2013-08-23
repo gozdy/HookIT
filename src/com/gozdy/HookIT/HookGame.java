@@ -21,7 +21,7 @@ public class HookGame extends Game {
 //		
 		
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("fontjuego.fnt"), Gdx.files.internal("fontjuego.png"), false);
 		this.setScreen(new MainMenuScreen(this));
 //		
 //		texture = new Texture(Gdx.files.internal("data/libgdx.png"));

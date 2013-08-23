@@ -19,6 +19,7 @@ public class Enemy extends DynamicGameObject {
     float speed = 20f;
     float angle;
     Vector2 gravity = new Vector2(0,-0.3f);
+    int candyType;
     
 	public Enemy(float x, float y, float width, float height) {
 		super(x, y, ENEMY_WIDTH, ENEMY_HEIGHT);
@@ -26,7 +27,7 @@ public class Enemy extends DynamicGameObject {
 		state = ALIVE;
 		stateTime=0;
 		velocity.set(MathUtils.cosDeg(angle)*speed, MathUtils.sinDeg(angle)*speed);
-		
+		candyType = MathUtils.random(0, 3);
 	
 	}
 	
