@@ -101,27 +101,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		
-		//RENDERING 
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		camera.update();
-		
-		hgame.batch.setProjectionMatrix(camera.combined);
-		
-		hgame.batch.begin();
-		hgame.batch.draw(backgroundRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-		 for (Enemy enemy : enemies) {
-			hgame.batch.draw(enemyimage, enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
-		 }
-		hgame.batch.draw(heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
-		
-		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
-		ropeSprite.draw(hgame.batch);
-		hookSprite.draw(hgame.batch);
-		
-//		hgame.batch.draw(hookimage, hero.hook.position.x, hero.hook.position.y, hero.hook.bounds.width, hero.hook.bounds.height);
-		hgame.batch.end();
+	
 		
 		
 		// HANDLING INPUT
@@ -165,14 +145,18 @@ public class GameScreen implements Screen {
 		  
 		//Manage return when enemy is hooked
 		  for (Enemy enemy : enemies) {
-			  if (hero.hook.bounds.overlaps(enemy.bounds) && enemy.state == Enemy.ALIVE && hero.state == Hero.HOOK_LAUNCHED)
+			  if (hero.hook.bounds.overlaps(enemy.bounds) && enemy.state == Enemy.ALIVE && hero.state == Hero.HOOK_LAUNCHED )
 		  {			
-				  hookTime = hero.stateTime*2;
+				  
 				  Gdx.app.log("hookTime", Float.toString(hookTime));
+				  if (hero.enemyState == Hero.NOENEMY){
+					  hookTime = hero.stateTime*2;
 				  hero.hook.velocity.x = -hero.hook.velocity.x;
 			 hero.hook.velocity.y = -hero.hook.velocity.y;
+		  }
 			 Gdx.app.log("hookangle", "OVERLAP");
 			 enemy.state = Enemy.HOOKED;
+			 hero.enemyState = Hero.GOTENEMY;
 		  		}
 		  }
 		  
@@ -198,13 +182,12 @@ public class GameScreen implements Screen {
 			  hookTime = hero.stateTime*2;
 			  hero.hook.velocity.x = -hero.hook.velocity.x;
 				 hero.hook.velocity.y = -hero.hook.velocity.y;
+				 hero.enemyState = Hero.GOTENEMY;
 				 
 				  Gdx.app.log("hookTime", Float.toString(hookTime));
 				  
 
 		  }
-		  
-		  
 		  
 		  // Handle hooked enemies
 		  for (Enemy enemy : enemies) {
@@ -214,8 +197,6 @@ public class GameScreen implements Screen {
 		  	}	
 		  
 		  
-		  
-		
 		  
 		  //Remove enemies that fall under y < 0 or X>width
 		  
@@ -234,6 +215,27 @@ public class GameScreen implements Screen {
 		for (Enemy enemy : enemies) {
 		enemy.update(delta);
 		}
+		
+		//RENDERING 
+		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		camera.update();
+		
+		hgame.batch.setProjectionMatrix(camera.combined);
+		
+		hgame.batch.begin();
+		hgame.batch.draw(backgroundRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+		 for (Enemy enemy : enemies) {
+			hgame.batch.draw(enemyimage, enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
+		 }
+		hgame.batch.draw(heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
+		
+		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
+		ropeSprite.draw(hgame.batch);
+		hookSprite.draw(hgame.batch);
+		
+		hgame.batch.end();
 		
 		
 	}

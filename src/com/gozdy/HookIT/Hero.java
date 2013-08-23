@@ -10,14 +10,18 @@ public class Hero extends DynamicGameObject {
     public static final float HERO_HEIGHT = 4f;
     public static final int HOOK_LAUNCHED = 0;
     public static final int HOOK_COOLDOWN = 1;
+    public static final int GOTENEMY = 0;
+    public static final int NOENEMY = 1;
 	
     int state;
+    int enemyState;
     float stateTime; 
     Hook hook;
     
 	public Hero(float x, float y, float width, float height) {
 		super(x, y, HERO_WIDTH, HERO_HEIGHT);
 		state = HOOK_COOLDOWN;
+		enemyState = NOENEMY;
 		stateTime=0;
 		velocity.set(0, 0);
 		hook = new Hook(x, y+bounds.height/3, 0.4f, 0.4f);	
@@ -49,6 +53,7 @@ public class Hero extends DynamicGameObject {
 	  public void getHook()
 	  {
 		  state = HOOK_COOLDOWN;
+		  enemyState = NOENEMY;
 		  stateTime = 0;
 		  hook.velocity.set(0,0);
 		  
