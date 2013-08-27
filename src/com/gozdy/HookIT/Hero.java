@@ -6,8 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class Hero extends DynamicGameObject {
 
-    public static final float HERO_WIDTH = 2f;
-    public static final float HERO_HEIGHT = 5.4f;
+
     public static final int HOOK_LAUNCHED = 0;
     public static final int HOOK_COOLDOWN = 1;
     public static final int GOTENEMY = 0;
@@ -20,7 +19,7 @@ public class Hero extends DynamicGameObject {
     Hook hook;
     
 	public Hero(float x, float y, float width, float height) {
-		super(x, y, HERO_WIDTH, HERO_HEIGHT);
+		super(x, y, width, height);
 		state = HOOK_COOLDOWN;
 		enemyState = NOENEMY;
 		stateTime=0;
@@ -43,10 +42,13 @@ public class Hero extends DynamicGameObject {
 		  hook.update(delta);
 	    }
 	  
-	  public void throwHook()
+	  public void throwHook(float angle, float ballspeed)
 	  {
 		  state = HOOK_LAUNCHED;
 		  stateTime = 0;
+		  hook.velocity.x = MathUtils.cosDeg(angle) * ballspeed;
+			hook.velocity.y = MathUtils.sinDeg(angle) * ballspeed;
+			
 		 
 		  
 	  }

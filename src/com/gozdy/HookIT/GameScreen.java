@@ -79,13 +79,11 @@ public class GameScreen implements Screen {
 		hookSprite = new Sprite(hookimage);
 		
 		candy = new Texture(Gdx.files.internal("candies.png"));
-
-		
 		candies = new Array<TextureRegion>();
-		candies.add(new TextureRegion(candy, 0, 0, 64, 64));
-		candies.add(new TextureRegion(candy, 0, 64, 64, 64));
-		candies.add(new TextureRegion(candy, 64, 0, 64, 64));
-		candies.add(new TextureRegion(candy, 64, 64, 64, 64));
+		candies.add(new TextureRegion(candy, 0, 0, 64, 64)); //Rueda Azul
+		candies.add(new TextureRegion(candy, 0, 64, 64, 64)); // Gotita de chocolate
+		candies.add(new TextureRegion(candy, 64, 0, 64, 64)); // Paleta
+		candies.add(new TextureRegion(candy, 64, 64, 64, 64)); // Caramelo violeta
 		
 		
 		ropeImg = new Texture(Gdx.files.internal("ropeVertical64.png"));
@@ -108,17 +106,16 @@ public class GameScreen implements Screen {
 		ropeSprite.setPosition(hero.hook.position.x+0.15f, hero.hook.position.y);
 		ropeSprite.setOrigin(0, 0);
 		
-		
+// LIGHTING
 		world = new World(gravity, false);
-		
 		
 		rayHandler = new RayHandler(world);
 		rayHandler.setCombinedMatrix(camera.combined);
-		rayHandler.setAmbientLight(1);
+		rayHandler.setAmbientLight(0.9f);
 	
 //		new ConeLight(rayHandler, 100, Color.CYAN, 20f, WORLD_WIDTH/2, WORLD_HEIGHT, 270, 35);
 		
-		hookLight = new PointLight(rayHandler, 50, Color.WHITE, 1f, hero.hook.position.x+0.2f, hero.hook.position.y+0.2f);
+		hookLight = new PointLight(rayHandler, 10, new Color(1, 1, 1, 0.5f), 0.5f, hero.hook.position.x+0.2f, hero.hook.position.y+0.2f);
 		
 	}
 
@@ -144,7 +141,7 @@ public class GameScreen implements Screen {
 		
 		  if (Gdx.input.isTouched()) {
 			  if (hero.state == Hero.HOOK_COOLDOWN){
-			  	hero.throwHook();
+			  
 	// Check touch position and angle
               Vector3 touchPos = new Vector3();
               touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -152,11 +149,11 @@ public class GameScreen implements Screen {
               Vector2 touchPos2 = new Vector2(touchPos.x, touchPos.y);
               hookAngle = touchPos2.sub(hero.hook.position).angle();
               float ballspeed = 15f;
-              			hero.hook.velocity.x = MathUtils.cosDeg(hookAngle) * ballspeed;
-              				hero.hook.velocity.y = MathUtils.sinDeg(hookAngle) * ballspeed;
-              				
-              				hookSprite.setRotation(hookAngle-90);
-              				ropeSprite.setRotation(hookAngle-90);
+              
+              hero.throwHook(hookAngle, ballspeed);
+              			
+              hookSprite.setRotation(hookAngle-90);
+              ropeSprite.setRotation(hookAngle-90);
 			  }
       }
 		  
