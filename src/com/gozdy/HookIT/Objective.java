@@ -13,6 +13,7 @@ public class Objective {
 	{
 		
 		candies = new int[4];
+		candyNumber = new int[4];
 		candyNumber[0] = a;
 		candyNumber[1] = b;
 		candyNumber[2] = c;
@@ -22,6 +23,7 @@ public class Objective {
 	
 	public boolean checkWon()
 	{
+		match = 0;
 		for (int i = 0; i < candies.length; i++) {
 			if (candies[i] == candyNumber[i])
 			{
@@ -31,7 +33,18 @@ public class Objective {
 		if (match == 4) {
 			Gdx.app.log("WON", "YOU WON");
 			return true;
-		}else return false;
+		}else{
+			Gdx.app.log("MATCH", Integer.toString(match));
+			Gdx.app.log("candy1", Integer.toString(candies[0]));
+			Gdx.app.log("candy2", Integer.toString(candies[1]));
+			Gdx.app.log("candy3", Integer.toString(candies[2]));
+			Gdx.app.log("candy4", Integer.toString(candies[3]));
+			Gdx.app.log("candy1", Integer.toString(candyNumber[0]));
+			Gdx.app.log("candy2", Integer.toString(candyNumber[1]));
+			Gdx.app.log("candy3", Integer.toString(candyNumber[2]));
+			Gdx.app.log("candy4", Integer.toString(candyNumber[3]));
+			return false;
+		}
 		
 			
 	}
