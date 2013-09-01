@@ -54,6 +54,7 @@ public class GameScreen implements Screen {
 	
 	Array<Enemy> enemies;
 	Array<TextureRegion> candies;
+	Objective objective;
 	
 	Hero hero;
 	float hookAngle = 0;
@@ -99,12 +100,16 @@ public class GameScreen implements Screen {
 		enemies = new Array<Enemy>();
 		spawnenemy();
 		
+		objective = new Objective(1, 1, 1, 1);
+		
 		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
 		hookSprite.setOrigin(0.2f,0.0f);
 		hookSprite.setSize(0.4f, 0.4f);
 		
 		ropeSprite.setPosition(hero.hook.position.x+0.15f, hero.hook.position.y);
 		ropeSprite.setOrigin(0, 0);
+		
+		
 		
 // LIGHTING
 		world = new World(gravity, false);
@@ -175,7 +180,9 @@ public class GameScreen implements Screen {
 			 hero.hook.velocity.y = -hero.hook.velocity.y;
 				  		}	
 			 enemy.state = Enemy.HOOKED;
+			
 			 hero.enemyState = Hero.GOTENEMY;
+			 objective.candies[enemy.candyType]++;
 		  		}
 		  }
 		  
@@ -184,6 +191,7 @@ public class GameScreen implements Screen {
 		  if (hero.state == Hero.HOOK_LAUNCHED && (hero.stateTime > hookTime || hero.hook.position.y < 0 )){
 			  hero.getHook();
 			  hookSprite.setRotation(0);
+			  objective.checkWon();
 			  Iterator<Enemy> iter = enemies.iterator();
 		      while(iter.hasNext()) {
 		         Enemy enemy = iter.next();
