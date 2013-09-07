@@ -25,7 +25,7 @@ public class Objective {
 	{
 		match = 0;
 		for (int i = 0; i < candies.length; i++) {
-			if (candies[i] == candyNumber[i])
+			if (candies[i] >= candyNumber[i])
 			{
 				match++;
 			}
@@ -52,10 +52,10 @@ public class Objective {
 	
 	public void reset()
 	{
-		candyNumber[0] = 0;
-		candyNumber[1] = 0;
-		candyNumber[2] = 0;
-		candyNumber[3] = 0;
+		candies[0] = 0;
+		candies[1] = 0;
+		candies[2] = 0;
+		candies[3] = 0;
 		match = 0;
 	}
 	
