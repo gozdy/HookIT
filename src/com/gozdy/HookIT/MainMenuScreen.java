@@ -26,7 +26,7 @@ public class MainMenuScreen implements Screen {
 			
 			playImage = new Texture(Gdx.files.internal("playGame.png"));
 			playSprite = new Sprite(playImage);
-			playSprite.setSize(4, 1);
+			playSprite.setSize(8, 2);
 			playSprite.setPosition(WORLD_WIDTH/2-playSprite.getWidth()/2, WORLD_HEIGHT/2);
 			
 			
@@ -37,7 +37,7 @@ public class MainMenuScreen implements Screen {
 	public void render(float delta) {
 		// TODO Auto-generated method stub
 		
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 0.98f, 0.98f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		camera.update();

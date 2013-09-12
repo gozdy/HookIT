@@ -143,7 +143,7 @@ public class GameScreen implements Screen {
 	
 //		new ConeLight(rayHandler, 100, Color.CYAN, 20f, WORLD_WIDTH/2, WORLD_HEIGHT, 270, 35);
 		
-		hookLight = new PointLight(rayHandler, 10, new Color(1, 1, 1, 0.2f), 0.5f, hero.hook.position.x+0.2f, hero.hook.position.y+0.2f);
+		hookLight = new PointLight(rayHandler, 10, new Color(1, 1, 1, 0.3f), 0.5f, hero.hook.position.x+0.2f, hero.hook.position.y+0.2f);
 		
 	}
 

@@ -35,10 +35,10 @@ public class Objective {
 			return true;
 		}else{
 			Gdx.app.log("MATCH", Integer.toString(match));
-			Gdx.app.log("candy1", Integer.toString(candies[0]));
-			Gdx.app.log("candy2", Integer.toString(candies[1]));
-			Gdx.app.log("candy3", Integer.toString(candies[2]));
-			Gdx.app.log("candy4", Integer.toString(candies[3]));
+			Gdx.app.log("gotita", Integer.toString(candies[0]));
+			Gdx.app.log("rueda", Integer.toString(candies[1]));
+			Gdx.app.log("caramelo", Integer.toString(candies[2]));
+			Gdx.app.log("paleta", Integer.toString(candies[3]));
 			Gdx.app.log("candy1", Integer.toString(candyNumber[0]));
 			Gdx.app.log("candy2", Integer.toString(candyNumber[1]));
 			Gdx.app.log("candy3", Integer.toString(candyNumber[2]));
