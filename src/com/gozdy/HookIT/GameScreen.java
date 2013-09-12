@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
 	Texture enemyimage;
 	Texture candy;
 	Texture playImage;
+	Texture numbers;
 	
 	PointLight hookLight;
 	
@@ -64,6 +65,7 @@ public class GameScreen implements Screen {
 	
 	Array<Enemy> enemies;
 	Array<TextureRegion> candies;
+	Array<TextureRegion> number;
 	Objective objective;
 	Iterator<Enemy> iter;
 	
@@ -104,6 +106,16 @@ public class GameScreen implements Screen {
 		candies.add(new TextureRegion(candy, 64, 0, 64, 64)); // Paleta
 		candies.add(new TextureRegion(candy, 64, 64, 64, 64)); // Caramelo violeta
 		
+		numbers = new Texture(Gdx.files.internal("numbers.png"));
+		number = new Array<TextureRegion>();
+		number.add(new TextureRegion(numbers, 0, 0, 64, 64)); //0
+		number.add(new TextureRegion(numbers, 64, 0, 64, 64)); // 1
+		number.add(new TextureRegion(numbers, 128, 0, 64, 64)); // 2
+		number.add(new TextureRegion(numbers, 192, 0, 64, 64)); // 3
+		number.add(new TextureRegion(numbers, 0, 64, 64, 64)); //4
+		number.add(new TextureRegion(numbers, 64, 64, 64, 64)); // 5
+		number.add(new TextureRegion(numbers, 128, 64, 64, 64)); // 6
+		number.add(new TextureRegion(numbers, 192, 64, 64, 64)); // 7		
 		
 		ropeImg = new Texture(Gdx.files.internal("ropeVertical64.png"));
 		ropeImg.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
@@ -183,7 +195,11 @@ public class GameScreen implements Screen {
 		
 		
 		for (int i = 0; i < candies.size; i++) {
-			hgame.batch.draw(candies.get(i), 0+(i*2), WORLD_HEIGHT-1, 1,1);
+			hgame.batch.draw(candies.get(i), 0+(i*1.5f), WORLD_HEIGHT-0.6f, 0.5f,0.5f);
+			if (objective.candies[i] < 7) {
+				hgame.batch.draw(number.get(objective.candies[i]), 0.5f+(i*1.5f), WORLD_HEIGHT-0.6f, 0.5f,0.5f);
+			}
+			
 		}
 		
 		
