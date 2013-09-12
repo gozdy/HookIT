@@ -350,6 +350,7 @@ hgame.batch.dispose();
 rayHandler.dispose();
 Assets.ropeImg.dispose();
 Assets.candy.dispose();
+Assets.atlas.dispose();
 	}
 
 }

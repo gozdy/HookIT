@@ -5,10 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Assets {
+	
+	public static TextureAtlas atlas;
 	
 	 public static TextureRegion backgroundRegion;
 	 public static TextureRegion heroimage;
@@ -32,14 +35,18 @@ public class Assets {
 
 	public static void load() 
 	{
+		
+		atlas = new TextureAtlas(Gdx.files.internal("HookIt.pack"));
 		background = new Texture(Gdx.files.internal("backgroundHookIT.png"));
 		background.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
         backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
         
-		hookimage = new Texture(Gdx.files.internal("HOOKRotado.png"));
+  
+        
+        
 		heroimg = new Texture(Gdx.files.internal("chef.png"));
 		heroimage = new TextureRegion(heroimg, 75, 0, 95, 256);
-		hookSprite = new Sprite(hookimage);
+		hookSprite = atlas.createSprite("HOOKRotado");
 		
 		candy = new Texture(Gdx.files.internal("candies.png"));
 		candies = new Array<TextureRegion>();
