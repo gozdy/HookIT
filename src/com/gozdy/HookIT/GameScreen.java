@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.gozdy.HookIT.Assets;
 
 
 public class GameScreen implements Screen {
@@ -38,25 +39,10 @@ public class GameScreen implements Screen {
 	
 	HookGame hgame;
 	
-	TextureRegion backgroundRegion;
-	TextureRegion heroimage;
-	TextureRegion ropeRegion;
 
 	
-	Texture background;
-	Texture heroimg;
-	Texture ropeImg;
-	Texture hookimage;
-	Texture enemyimage;
-	Texture candy;
-	Texture playImage;
-	Texture numbers;
-	
 	PointLight hookLight;
-	
-	Sprite ropeSprite;
-	Sprite hookSprite;
-	Sprite playSprite;
+
 
 	
 	OrthographicCamera camera;
@@ -64,8 +50,7 @@ public class GameScreen implements Screen {
 	RayHandler rayHandler;
 	
 	Array<Enemy> enemies;
-	Array<TextureRegion> candies;
-	Array<TextureRegion> number;
+
 	Objective objective;
 	Iterator<Enemy> iter;
 	
@@ -84,48 +69,16 @@ public class GameScreen implements Screen {
 
 	public GameScreen(final HookGame game) {
 		
+		Assets.load();
 		hgame = game;
 		logger = new FPSLogger();
 		state = GAME_RUNNING;
 		stateTime = 0f;
 		// load the image and set camera
 		
-		background = new Texture(Gdx.files.internal("backgroundHookIT.png"));
-		background.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
-        
-		hookimage = new Texture(Gdx.files.internal("HOOKRotado.png"));
-		heroimg = new Texture(Gdx.files.internal("chef.png"));
-		heroimage = new TextureRegion(heroimg, 75, 0, 95, 256);
-		hookSprite = new Sprite(hookimage);
-		
-		candy = new Texture(Gdx.files.internal("candies.png"));
-		candies = new Array<TextureRegion>();
-		candies.add(new TextureRegion(candy, 0, 0, 64, 64)); //Rueda Azul
-		candies.add(new TextureRegion(candy, 0, 64, 64, 64)); // Gotita de chocolate
-		candies.add(new TextureRegion(candy, 64, 0, 64, 64)); // Paleta
-		candies.add(new TextureRegion(candy, 64, 64, 64, 64)); // Caramelo violeta
-		
-		numbers = new Texture(Gdx.files.internal("numbers.png"));
-		number = new Array<TextureRegion>();
-		number.add(new TextureRegion(numbers, 0, 0, 64, 64)); //0
-		number.add(new TextureRegion(numbers, 64, 0, 64, 64)); // 1
-		number.add(new TextureRegion(numbers, 128, 0, 64, 64)); // 2
-		number.add(new TextureRegion(numbers, 192, 0, 64, 64)); // 3
-		number.add(new TextureRegion(numbers, 0, 64, 64, 64)); //4
-		number.add(new TextureRegion(numbers, 64, 64, 64, 64)); // 5
-		number.add(new TextureRegion(numbers, 128, 64, 64, 64)); // 6
-		number.add(new TextureRegion(numbers, 192, 64, 64, 64)); // 7		
-		
-		ropeImg = new Texture(Gdx.files.internal("ropeVertical64.png"));
-		ropeImg.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		ropeRegion = new TextureRegion(ropeImg, 0, 0, 5, 5);
-		ropeSprite = new Sprite(ropeRegion);
-		
-		playImage = new Texture(Gdx.files.internal("playGame.png"));
-		playSprite = new Sprite(playImage);
-		playSprite.setSize(4, 1);
-		playSprite.setPosition(WORLD_WIDTH/2-playSprite.getWidth()/2, WORLD_HEIGHT/2);
+
+		Assets.playSprite.setSize(4, 1);
+		Assets.playSprite.setPosition(WORLD_WIDTH/2-Assets.playSprite.getWidth()/2, WORLD_HEIGHT/2);
 		
 
 		camera = new OrthographicCamera();
@@ -138,12 +91,12 @@ public class GameScreen implements Screen {
 		
 		objective = new Objective(1, 1, 1, 1);
 		
-		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
-		hookSprite.setOrigin(0.2f,0.0f);
-		hookSprite.setSize(0.4f, 0.4f);
+		Assets.hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
+		Assets.hookSprite.setOrigin(0.2f,0.0f);
+		Assets.hookSprite.setSize(0.4f, 0.4f);
 		
-		ropeSprite.setPosition(hero.hook.position.x+0.15f, hero.hook.position.y);
-		ropeSprite.setOrigin(0, 0);
+		Assets.ropeSprite.setPosition(hero.hook.position.x+0.15f, hero.hook.position.y);
+		Assets.ropeSprite.setOrigin(0, 0);
 		
 		
 		
@@ -191,13 +144,13 @@ public class GameScreen implements Screen {
 		hgame.batch.setProjectionMatrix(camera.combined);
 		
 		hgame.batch.begin();
-		hgame.batch.draw(backgroundRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+		hgame.batch.draw(Assets.backgroundRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 		
 		
-		for (int i = 0; i < candies.size; i++) {
-			hgame.batch.draw(candies.get(i), 0+(i*1.5f), WORLD_HEIGHT-0.6f, 0.5f,0.5f);
+		for (int i = 0; i < Assets.candies.size; i++) {
+			hgame.batch.draw(Assets.candies.get(i), 0+(i*1.5f), WORLD_HEIGHT-0.6f, 0.5f,0.5f);
 			if (objective.candies[i] < 7) {
-				hgame.batch.draw(number.get(objective.candies[i]), 0.5f+(i*1.5f), WORLD_HEIGHT-0.6f, 0.5f,0.5f);
+				hgame.batch.draw(Assets.number.get(objective.candies[i]), 0.5f+(i*1.5f), WORLD_HEIGHT-0.6f, 0.5f,0.5f);
 			}
 			
 		}
@@ -205,13 +158,13 @@ public class GameScreen implements Screen {
 		
 
 		 for (Enemy enemy : enemies) {
-			hgame.batch.draw(candies.get(enemy.candyType), enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
+			hgame.batch.draw(Assets.candies.get(enemy.candyType), enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
 		 }
 		 
-		hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
-		ropeSprite.draw(hgame.batch);
-		hookSprite.draw(hgame.batch);
-		hgame.batch.draw(heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
+		 Assets.hookSprite.setPosition(hero.hook.position.x, hero.hook.position.y);
+		 Assets.ropeSprite.draw(hgame.batch);
+		 Assets.hookSprite.draw(hgame.batch);
+		hgame.batch.draw(Assets.heroimage, hero.position.x, hero.position.y, hero.bounds.width, hero.bounds.height);
 		if (state == GAME_PAUSED) renderPaused();
 		hgame.batch.end();
 		
@@ -222,7 +175,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderPaused() {
- playSprite.draw(hgame.batch);		
+		Assets.playSprite.draw(hgame.batch);		
 	}
 
 
@@ -249,17 +202,17 @@ public class GameScreen implements Screen {
             
             hero.throwHook(hookAngle, ballspeed);
             			
-            hookSprite.setRotation(hookAngle-90);
-            ropeSprite.setRotation(hookAngle-90);
+            Assets.hookSprite.setRotation(hookAngle-90);
+            Assets.ropeSprite.setRotation(hookAngle-90);
 			  }
     }
 		  
 		  // Change rope size depending where the hook is
 		  
 		  distancehero = hero.hook.position.dst(hero.position.x, hero.position.y+hero.bounds.height/3)+0.1f;
-		  ropeSprite.setSize(0.1f, distancehero);
-		  ropeSprite.setV(0);
-		  ropeSprite.setV2(distancehero);
+		  Assets.ropeSprite.setSize(0.1f, distancehero);
+		  Assets.ropeSprite.setV(0);
+		  Assets.ropeSprite.setV2(distancehero);
 		  
 		  
 		  
@@ -290,7 +243,7 @@ public class GameScreen implements Screen {
 		  
 		  if (hero.state == Hero.HOOK_LAUNCHED && (hero.stateTime > hookTime || hero.hook.position.y < 0 )){
 			  hero.getHook();
-			  hookSprite.setRotation(0);
+			  Assets.hookSprite.setRotation(0);
 			  if(objective.checkWon()) state=GAME_PAUSED;
 			  iter = enemies.iterator();
 		      while(iter.hasNext()) {
@@ -348,7 +301,7 @@ public class GameScreen implements Screen {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             
-            if(playSprite.getBoundingRectangle().contains(touchPos.x, touchPos.y)){
+            if(Assets.playSprite.getBoundingRectangle().contains(touchPos.x, touchPos.y)){
             	state = GAME_RUNNING;
             	stateTime = 0;
             	}
@@ -389,14 +342,14 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-enemyimage.dispose();
-heroimg.dispose();
-background.dispose();
-hookimage.dispose();
+		Assets.enemyimage.dispose();
+		Assets.heroimg.dispose();
+		Assets.background.dispose();
+		Assets.hookimage.dispose();
 hgame.batch.dispose();
 rayHandler.dispose();
-ropeImg.dispose();
-candy.dispose();
+Assets.ropeImg.dispose();
+Assets.candy.dispose();
 	}
 
 }
