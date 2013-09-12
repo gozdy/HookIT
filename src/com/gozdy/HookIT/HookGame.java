@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class HookGame extends Game {
 	SpriteBatch batch;
-	BitmapFont font;
+	public BitmapFont font;
 	
 	
 	

@@ -114,6 +114,7 @@ public class GameScreen implements Screen {
 		playSprite = new Sprite(playImage);
 		playSprite.setSize(4, 1);
 		playSprite.setPosition(WORLD_WIDTH/2-playSprite.getWidth()/2, WORLD_HEIGHT/2);
+		
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -179,6 +180,14 @@ public class GameScreen implements Screen {
 		
 		hgame.batch.begin();
 		hgame.batch.draw(backgroundRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+		
+		
+		for (int i = 0; i < candies.size; i++) {
+			hgame.batch.draw(candies.get(i), 0+(i*2), WORLD_HEIGHT-1, 1,1);
+		}
+		
+		
+
 		 for (Enemy enemy : enemies) {
 			hgame.batch.draw(candies.get(enemy.candyType), enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height);
 		 }
